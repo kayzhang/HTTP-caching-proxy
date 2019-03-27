@@ -1,0 +1,45 @@
+assignment #2
+
+1. What if client cannot receive complete information from server?
+   To solve this problem, we use a while loop to make sure that we
+   receive all the data from the server.
+
+2. Difference between connection: close and keep-alive may cause
+   conneciton conflict when using GET or POST.
+   At first, we cannot receive the whole page from the server.
+   After reading some book, we find the difference between
+   keep-alive and close, so we parse the request and change the
+   keep-alive to close. Then we succeed.
+
+3. When receiving request from clien, we receive a NULL request.
+   We don't know why this happens, but we handle this by close
+   this request.
+
+4. Message such as Resource temporary unavailable may occurs.
+
+5. Data race may occur. We added lock.
+   When output log to the file, different threads may have data
+   race, so we add a mutex lock to protect the file.
+
+6. When we accessed https web, random behaviors always occurred.
+   we realized that we misunderstood the process. We thought it
+   is necessary to send everything after parsing back to server
+   when connecting, but instead, if we send the package to
+   server, no connection can be made between sockets.  
+
+7. When lock was added, some messy logs appeared, this error is
+   due to one of the field in the argument of the thread function
+   is a pointer to a variable in the stack. So after the thread
+   begins, the variable is destroyed. Thus, the argument become
+   a dangling pointer. To solve the problem, we store these data
+   on heap.
+
+8. We test our proxy using the following test cases.
+
+   For GET, we use some website like "www.ruanyifeng.com"
+
+   For POST, we use some website like "http://httpbin.org/forms/post"
+
+   For CONNECT, we use some website like youtube and google
+
+   We also try to open multiple tabs of the browser.
